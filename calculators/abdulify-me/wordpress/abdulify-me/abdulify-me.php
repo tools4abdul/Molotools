@@ -586,6 +586,17 @@ final class Abdulify_Me_Plugin {
         add_action( 'wp_ajax_am_overlay_upload', array( $this, 'handle_overlay_upload' ) );
         add_action( 'wp_ajax_am_overlay_rename', array( $this, 'handle_overlay_rename' ) );
         add_action( 'wp_ajax_am_overlay_delete', array( $this, 'handle_overlay_delete' ) );
+        add_filter( 'upload_mimes', array( $this, 'allow_overlay_mime_types' ) );
+    }
+
+    /**
+     * WordPress core does not allow SVG uploads by default; register SVG and GIF
+     * so wp_check_filetype() recognizes them for overlay uploads.
+     */
+    public function allow_overlay_mime_types( $mimes ) {
+        $mimes['svg']  = 'image/svg+xml';
+        $mimes['gif']  = 'image/gif';
+        return $mimes;
     }
 
     public function register_settings_page() {
@@ -810,12 +821,12 @@ final class Abdulify_Me_Plugin {
                                 type="file" 
                                 id="am-overlay-file" 
                                 name="overlay_file" 
-                                accept=".png,.jpg,.jpeg,.webp,.svg" 
+                                accept=".png,.jpg,.jpeg,.webp,.svg,.gif"
                                 required
                                 style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;"
                             >
                             <p style="margin: 5px 0 0 0; font-size: 12px; color: #666;">
-                                <?php esc_html_e( 'Supported: PNG, JPG, JPEG, WebP, SVG (Max 8 MB)', 'abdulify-me' ); ?>
+                                <?php esc_html_e( 'Supported: PNG, JPG, JPEG, WebP, SVG, GIF (Max 8 MB)', 'abdulify-me' ); ?>
                             </p>
                         </div>
                         <button type="submit" class="button button-primary" style="padding: 8px 15px;">
@@ -950,7 +961,7 @@ final class Abdulify_Me_Plugin {
             wp_mkdir_p( $dest_dir );
         }
 
-        $allowed_extensions = array( 'png', 'jpg', 'jpeg', 'webp', 'svg' );
+        $allowed_extensions = array( 'png', 'jpg', 'jpeg', 'webp', 'svg', 'gif' );
         $files = scandir( $src_dir );
         if ( false === $files ) {
             return;
@@ -985,7 +996,7 @@ final class Abdulify_Me_Plugin {
 
     private function scan_overlay_dir( $dir_path, $url_base, $deletable, $custom_names ) {
         $overlays           = array();
-        $allowed_extensions = array( 'png', 'jpg', 'jpeg', 'webp', 'svg' );
+        $allowed_extensions = array( 'png', 'jpg', 'jpeg', 'webp', 'svg', 'gif' );
 
         if ( ! is_dir( $dir_path ) ) {
             return $overlays;
@@ -1112,13 +1123,13 @@ final class Abdulify_Me_Plugin {
         }
 
         $file = $_FILES['file'];
-        $allowed_types = array( 'image/png', 'image/jpeg', 'image/webp', 'image/svg+xml' );
+        $allowed_types = array( 'image/png', 'image/jpeg', 'image/webp', 'image/svg+xml', 'image/gif' );
         $max_size = 8 * 1024 * 1024; // 8 MB
 
         // Validate file
         $ftype = wp_check_filetype( $file['name'] );
         if ( ! in_array( $ftype['type'], $allowed_types, true ) ) {
-            wp_send_json_error( array( 'message' => __( 'Invalid file type. Allowed: PNG, JPG, WebP, SVG', 'abdulify-me' ) ) );
+            wp_send_json_error( array( 'message' => __( 'Invalid file type. Allowed: PNG, JPG, WebP, SVG, GIF', 'abdulify-me' ) ) );
         }
 
         if ( $file['size'] > $max_size ) {
@@ -1374,8 +1385,8 @@ final class Abdulify_Me_Plugin {
                 <div class="am-panel">
                     <label class="am-upload">
                         <span class="am-upload-title"><?php esc_html_e( 'Upload Photo', 'abdulify-me' ); ?></span>
-                        <span class="am-upload-help"><?php esc_html_e( 'PNG or JPG up to 8 MB', 'abdulify-me' ); ?></span>
-                        <input class="am-photo-input" type="file" accept="image/png,image/jpeg,image/webp">
+                        <span class="am-upload-help"><?php esc_html_e( 'PNG, JPG, WebP, SVG, or GIF up to 8 MB', 'abdulify-me' ); ?></span>
+                        <input class="am-photo-input" type="file" accept="image/png,image/jpeg,image/webp,image/svg+xml,image/gif">
                     </label>
 
                     <fieldset class="am-controls" aria-label="<?php esc_attr_e( 'Photo border', 'abdulify-me' ); ?>">

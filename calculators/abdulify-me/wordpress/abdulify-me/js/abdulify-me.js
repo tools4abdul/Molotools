@@ -741,8 +741,8 @@
         return;
       }
 
-      if (!/^image\/(png|jpeg|jpg|webp)$/i.test(file.type)) {
-        setStatus('Please choose a PNG, JPG, or WEBP image.', true);
+      if (!/^image\/(png|jpeg|jpg|webp|gif|svg\+xml)$/i.test(file.type)) {
+        setStatus('Please choose a PNG, JPG, WEBP, SVG, or GIF image.', true);
         return;
       }
 
