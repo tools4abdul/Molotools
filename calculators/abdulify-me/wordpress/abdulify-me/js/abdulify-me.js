@@ -175,9 +175,6 @@
     var canvas = widget.querySelector('[data-am-canvas]');
     var overlaySelect = widget.querySelector('[data-am-overlay-select]');
     var downloadButton = widget.querySelector('[data-am-download]');
-    var setProfileFbButton = widget.querySelector('[data-am-set-profile-fb]');
-    var setProfileIgButton = widget.querySelector('[data-am-set-profile-ig]');
-    var setProfileShareButton = widget.querySelector('[data-am-set-profile-share]');
     var status = widget.querySelector('[data-am-status]');
 
     if (!input || !canvas || !overlaySelect || !downloadButton || !status) {
@@ -346,124 +343,6 @@
       status.style.color = isError ? colors.statusError : colors.statusInfo;
     }
 
-    function setControlDisabled(control, disabled) {
-      if (control) {
-        control.disabled = !!disabled;
-      }
-    }
-
-    function hasReadyCanvasImage() {
-      return !!sourceImage;
-    }
-
-    function generateProfilePicBlob() {
-      var profileSize = 720;
-      var profileCanvas = document.createElement('canvas');
-      var profileCtx = profileCanvas.getContext('2d');
-      var side = Math.min(canvas.width, canvas.height);
-      var sx = (canvas.width - side) / 2;
-      var sy = (canvas.height - side) / 2;
-
-      profileCanvas.width = profileSize;
-      profileCanvas.height = profileSize;
-      profileCtx.imageSmoothingEnabled = true;
-      profileCtx.imageSmoothingQuality = 'high';
-      profileCtx.drawImage(canvas, sx, sy, side, side, 0, 0, profileSize, profileSize);
-
-      return new Promise(function (resolve) {
-        profileCanvas.toBlob(function (blob) {
-          resolve(blob);
-        }, 'image/png');
-      });
-    }
-
-    function triggerProfilePicDownload(blob) {
-      var url = URL.createObjectURL(blob);
-      var link = document.createElement('a');
-      link.href = url;
-      link.download = 'abdulified-profile-photo.png';
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      setTimeout(function () { URL.revokeObjectURL(url); }, 5000);
-    }
-
-    function handleSetProfileFacebook() {
-      if (!sourceImage) { return; }
-
-      generateProfilePicBlob().then(function (blob) {
-        triggerProfilePicDownload(blob);
-        window.open('https://www.facebook.com/profile', '_blank', 'noopener');
-        setStatus('Photo downloaded. On the Facebook tab, click your profile picture to change it.', false);
-      });
-    }
-
-    function handleSetProfileInstagram() {
-      if (!sourceImage) { return; }
-
-      generateProfilePicBlob().then(function (blob) {
-        triggerProfilePicDownload(blob);
-
-        var isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
-        if (isMobile) {
-          window.open('instagram://app', '_blank', 'noopener');
-        } else {
-          window.open('https://www.instagram.com/', '_blank', 'noopener');
-        }
-
-        setStatus('Photo downloaded. Open Instagram → Profile → Edit → Change Photo → Choose from Library.', false);
-      });
-    }
-
-    function handleSetProfileShare() {
-      if (!sourceImage) { return; }
-
-      generateProfilePicBlob().then(function (blob) {
-        var file = new File([blob], 'abdulified-profile-photo.png', { type: 'image/png' });
-
-        if (navigator.canShare && navigator.canShare({ files: [file] })) {
-          navigator.share({
-            files: [file],
-            title: 'My Abdulified Profile Photo',
-            text: 'Set this as your profile picture!'
-          }).then(function () {
-            setStatus('Photo shared successfully.', false);
-          }).catch(function (err) {
-            if (err.name !== 'AbortError') {
-              setStatus('Share was cancelled or failed.', true);
-            }
-          });
-        } else {
-          triggerProfilePicDownload(blob);
-          setStatus('Photo downloaded. Share it from your device to set as profile picture.', false);
-        }
-      });
-    }
-
-    function updateProfilePicButtons() {
-      var ready = hasReadyCanvasImage();
-      setControlDisabled(setProfileFbButton, !ready);
-      setControlDisabled(setProfileIgButton, !ready);
-
-      if (setProfileShareButton) {
-        var hasShareApi = !!(navigator.share && navigator.canShare);
-        setControlDisabled(setProfileShareButton, !ready || !hasShareApi);
-        setProfileShareButton.style.display = hasShareApi ? '' : 'none';
-      }
-    }
-
-    function initProfilePicUi() {
-      if (setProfileFbButton) {
-        setProfileFbButton.addEventListener('click', handleSetProfileFacebook);
-      }
-      if (setProfileIgButton) {
-        setProfileIgButton.addEventListener('click', handleSetProfileInstagram);
-      }
-      if (setProfileShareButton) {
-        setProfileShareButton.addEventListener('click', handleSetProfileShare);
-      }
-      updateProfilePicButtons();
-    }
 
     function drawPlaceholder() {
       var colors = resolveColors();
@@ -655,7 +534,6 @@
       if (!isFinitePositive(sourceWidth) || !isFinitePositive(sourceHeight)) {
         setStatus('Could not read the selected image dimensions.', true);
         downloadButton.disabled = true;
-        updateProfilePicButtons();
         return Promise.resolve();
       }
 
@@ -663,7 +541,6 @@
       if (!baseRenderSize) {
         setStatus('Could not prepare the image for rendering.', true);
         downloadButton.disabled = true;
-        updateProfilePicButtons();
         return Promise.resolve();
       }
 
@@ -679,14 +556,12 @@
       if (!renderSourceImage()) {
         setStatus('Could not render the selected image.', true);
         downloadButton.disabled = true;
-        updateProfilePicButtons();
         return Promise.resolve();
       }
 
       if (!selectedOverlay) {
         setStatus('Select an AFS-Social border to continue.', true);
         downloadButton.disabled = true;
-        updateProfilePicButtons();
         return Promise.resolve();
       }
 
@@ -722,7 +597,6 @@
           }
 
           downloadButton.disabled = false;
-          updateProfilePicButtons();
           setStatus('Border applied. Scroll to zoom, drag to reposition.', false);
         })
         .catch(function (error) {
@@ -731,7 +605,6 @@
           }
 
           downloadButton.disabled = true;
-          updateProfilePicButtons();
           setStatus(error.message || 'Could not apply selected border.', true);
         });
     }
@@ -974,7 +847,6 @@
         drawOverlayPreview();
       }
     });
-    initProfilePicUi();
 
     function addDropZone(element, dragoverClass) {
       element.addEventListener('dragenter', function (event) {
@@ -1019,7 +891,6 @@
     } else {
       drawOverlayPreview();
     }
-    updateProfilePicButtons();
   }
 
   function init() {
