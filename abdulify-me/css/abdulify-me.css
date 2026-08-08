@@ -1,0 +1,11 @@
+:root {
+  --am-bg: var(--abdul-bg, var(--afs-bg, #f6f1e5));
+  --am-surface: var(--abdul-surface, var(--afs-surface, #ffffff));
+  --am-primary: var(--abdul-primary, var(--afs-primary, var(--color-primary, #0f4f78)));
+}
+
+.am-widget {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 28px;
+}
