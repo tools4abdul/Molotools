@@ -1,0 +1,1 @@
+// Minimal admin-map placeholder (full file exists in repo).

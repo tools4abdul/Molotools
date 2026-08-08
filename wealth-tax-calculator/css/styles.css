@@ -1,0 +1,26 @@
+/* Billionaire Wealth Tax Calculator — WordPress plugin styles
+   All rules are scoped to .calculator-container to avoid conflicts with the active theme.
+
+   Typefaces:
+         Primary   — Kensington (headings)   — commercial font, load via your theme or another font provider
+         Secondary — Halyard Text (body)     — commercial font, load via your theme or another font provider
+   Fallback stacks are provided for both so the layout holds if the fonts are not yet loaded. */
+
+:root {
+    --wtc-font-primary:   'Kensington', 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
+    --wtc-font-secondary: 'Halyard Text', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.calculator-container {
+    width: 100%;
+    max-width: 2200px;
+    margin: 0 auto;
+    background: #FBF0E4;
+    border-radius: 12px;
+    box-shadow: 0 10px 40px rgba(18, 28, 80, 0.18);
+    overflow: hidden;
+    font-family: var(--wtc-font-secondary);
+    line-height: 1.6;
+    color: #131110;
+    box-sizing: border-box;
+}

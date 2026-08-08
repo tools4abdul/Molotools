@@ -1,0 +1,8 @@
+{
+  "name": "molotools/wealth-tax-calculator",
+  "description": "WordPress wealth tax calculator plugin",
+  "type": "project",
+  "require": {
+    "dompdf/dompdf": "^2.0"
+  }
+}
