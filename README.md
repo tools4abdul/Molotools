@@ -8,3 +8,6 @@ A social media amplification platform for political campaigns. Create shareable 
 
 ### [Wealth Tax Calculator](calculators/wealth-tax-calculator/)
 WordPress plugin with interactive wealth tax calculators and county-level data visualizations.
+
+### Abdulify Me
+Wordpress plugin for adding campaign overlay borders to user provided photos.
