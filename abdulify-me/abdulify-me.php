@@ -9,7 +9,7 @@
  * License URI: https://www.gnu.org/licenses/gpl-2.0.html
  * Text Domain: abdulify-me
  * Requires:    5.0
- * Requires PHP: 7.4
+ * Requires PHP: 8.3
  * Tested up to: 6.6
  * GitHub Plugin URI: hexa-decim8/Molotools
  * GitHub Branch:     main
