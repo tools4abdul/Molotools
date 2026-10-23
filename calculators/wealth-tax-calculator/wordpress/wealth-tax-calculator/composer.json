@@ -4,6 +4,6 @@
   "type": "project",
   "require": {
     "php": ">=8.3.36",
-    "dompdf/dompdf": "^2.0"
+    "dompdf/dompdf": "^3.1"
   }
 }
