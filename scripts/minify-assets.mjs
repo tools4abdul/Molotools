@@ -6,7 +6,7 @@ const root = resolve(process.cwd());
 
 const pluginTargets = [
   {
-    pluginRoot: resolve(root, 'wealth-tax-calculator'),
+    pluginRoot: resolve(root, 'calculators/wealth-tax-calculator/wordpress/wealth-tax-calculator'),
     assets: [
       {
         label: 'wealth tax calculator JS',
@@ -42,7 +42,7 @@ const pluginTargets = [
     ]
   },
   {
-    pluginRoot: resolve(root, 'abdulify-me'),
+    pluginRoot: resolve(root, 'calculators/abdulify-me/wordpress/abdulify-me'),
     assets: [
       {
         label: 'abdulify me JS',
